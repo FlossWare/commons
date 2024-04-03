@@ -17,12 +17,15 @@
 package org.flossware.commons.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.flossware.commons.io.FileException;
 import org.flossware.commons.io.IOException;
 
 /**
@@ -106,7 +109,11 @@ public final class PropertyUtil {
     }
 
     public static Properties fromFile(final File file) {
-        return PropertyUtil.fromFile(file);
+        try {
+            return fromInputStream(new FileInputStream(file), true);
+        } catch(final FileNotFoundException fileNotFoundException) {
+            throw new FileException(fileNotFoundException);
+        }
     }
 
     public static Properties fromFile(final String filename) {
