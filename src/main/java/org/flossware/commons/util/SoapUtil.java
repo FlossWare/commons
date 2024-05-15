@@ -10,8 +10,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
-import org.apache.cxf.frontend.ClientProxy;
-import org.apache.cxf.headers.Header;
 
 /**
  *
