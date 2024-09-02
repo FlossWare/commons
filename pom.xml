@@ -5,7 +5,7 @@
 
     <groupId>org.flossware</groupId>
     <artifactId>commons</artifactId>
-    <version>1.4</version>
+    <version>1.5</version>
 
     <name>FlossWare Java Commons Library</name>
     <description>This project is a collection of shareable Java related functionality.</description>
@@ -40,7 +40,7 @@
 
         <org.apache.maven.plugins_maven-scm-plugin>2.0.1</org.apache.maven.plugins_maven-scm-plugin>
 
-        <org.apache.commons_commons-lang3>3.12.0</org.apache.commons_commons-lang3>
+        <org.apache.commons_commons-lang3>3.17.0</org.apache.commons_commons-lang3>
         <org.apache.cxf_rt-frontend-jaxws>4.0.4</org.apache.cxf_rt-frontend-jaxws>
         <org.apache.cxf_cxf-core>4.0.4</org.apache.cxf_cxf-core>
 
