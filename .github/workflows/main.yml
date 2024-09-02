@@ -6,11 +6,11 @@ name: CD-CI for RPM
 
 on:
   push:
-    branches: [ sfloess_issue-10 ]
+    branches: [ main ]
 
 jobs:
   build:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/sfloess_issue-10' && github.event.pusher.email != 'version-bump@flossware.org'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.pusher.email != 'version-bump@flossware.org'
     runs-on: ubuntu-latest
 
     steps:
