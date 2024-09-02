@@ -50,25 +50,6 @@ jobs:
           actor: 'VersionBump'
           token: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: Preparing settings.xml
-        uses: s4u/maven-settings-action@v3.0.0
-        with:
-          githubServer: false
-          servers: |
-            [
-              {
-                "id": "packagecloud-flossware",
-                "configuration": {
-                  "httpHeaders": {
-                    "property": {
-                      "name": "Authorization",
-                      "value": "Bearer ${{ secrets.PACKAGECLOUD_TOKEN }}"
-                    }
-                  }
-                }
-              }
-            ]
-
       - name: Incrementing pom.xml version
         run: "mvn -U build-helper:parse-version versions:set -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.nextMinorVersion} versions:commit"
 
