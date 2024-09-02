@@ -34,7 +34,7 @@ jobs:
                   "httpHeaders": {
                     "property": {
                       "name": "Authorization",
-                      "value": "${{ secrets.PCT }}"
+                      "value": "Bearer ${{ secrets.PACKAGECLOUD_TOKEN }}"
                     }
                   }
                 }
