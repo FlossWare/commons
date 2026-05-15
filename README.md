@@ -1,8 +1,8 @@
-# FlossWare Commons
+# FlossWare JCommons
 
 Foundation utilities for the [Solenopsis](https://github.com/solenopsis) Salesforce SOAP framework.
 
-[![Build Status](https://github.com/FlossWare/commons/workflows/CD-CI/badge.svg)](https://github.com/FlossWare/commons/actions)
+[![Build Status](https://github.com/FlossWare/jcommons/workflows/CD-CI/badge.svg)](https://github.com/FlossWare/jcommons/actions)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 ## Purpose
@@ -13,21 +13,21 @@ This library provides low-level utilities used by the Solenopsis framework for S
 
 ## Features
 
-### SOAP Utilities (`org.flossware.commons.util.SoapUtil`)
+### SOAP Utilities (`org.flossware.jcommons.util.SoapUtil`)
 Core utilities for Apache CXF SOAP clients:
 - Configure SOAP service headers and endpoints
 - Compute QNames from `@WebServiceClient` annotations  
 - Set custom headers for Salesforce API calls
 - Manage SOAP factory instances
 
-### String Utilities (`org.flossware.commons.util.StringUtil`)
+### String Utilities (`org.flossware.jcommons.util.StringUtil`)
 - String concatenation with separators
 - URL encoding
 - Unique ID generation with UUID
 - Validation (`requireNonBlank`)
 - Serialization/deserialization (internal use only)
 
-### File Utilities (`org.flossware.commons.util.FileUtil`)
+### File Utilities (`org.flossware.jcommons.util.FileUtil`)
 - Safe file I/O with validation
 - File existence checking
 - FileInputStream creation with proper error handling
@@ -45,8 +45,8 @@ Core utilities for Apache CXF SOAP clients:
 ```xml
 <dependency>
     <groupId>org.flossware</groupId>
-    <artifactId>commons</artifactId>
-    <version>1.10</version>
+    <artifactId>jcommons</artifactId>
+    <version>1.13</version>
 </dependency>
 
 <repositories>
@@ -62,7 +62,7 @@ Core utilities for Apache CXF SOAP clients:
 ### Configure Salesforce SOAP Endpoint
 
 ```java
-import org.flossware.commons.util.SoapUtil;
+import org.flossware.jcommons.util.SoapUtil;
 
 // Create a port and set Salesforce endpoint
 MetadataPortType port = portFactory.createPort();
@@ -72,7 +72,7 @@ SoapUtil.setUrl(port, "https://na1.salesforce.com/services/Soap/m/58.0");
 ### Set SOAP Headers for Salesforce Session
 
 ```java
-import org.flossware.commons.util.SoapUtil;
+import org.flossware.jcommons.util.SoapUtil;
 import javax.xml.namespace.QName;
 
 Service service = new MetadataService();
@@ -84,7 +84,7 @@ SoapUtil.setHeader(service, sessionHeaderQName, sessionHeaderValue);
 ### Compute QName from Service Class
 
 ```java
-import org.flossware.commons.util.SoapUtil;
+import org.flossware.jcommons.util.SoapUtil;
 
 QName qname = SoapUtil.computeQName(MetadataService.class);
 // Returns QName based on @WebServiceClient annotation
@@ -93,7 +93,7 @@ QName qname = SoapUtil.computeQName(MetadataService.class);
 ### String Validation
 
 ```java
-import org.flossware.commons.util.StringUtil;
+import org.flossware.jcommons.util.StringUtil;
 
 // Validate non-blank strings
 String apiUrl = StringUtil.requireNonBlank(url, "Salesforce URL cannot be blank");
@@ -105,7 +105,7 @@ String requestId = StringUtil.generateUniqueString("sfdc-request-");
 ### File Operations
 
 ```java
-import org.flossware.commons.util.FileUtil;
+import org.flossware.jcommons.util.FileUtil;
 
 // Ensure file exists before processing
 File wsdlFile = FileUtil.ensureFileExists("src/main/resources/wsdl/metadata.wsdl");
@@ -159,7 +159,7 @@ This library sits at the foundation of the Solenopsis stack:
 └───────────┬─────────────┘
             │ depends on
 ┌───────────▼─────────────┐
-│  FlossWare Commons      │  ← Foundation utilities (this)
+│  FlossWare JCommons      │  ← Foundation utilities (this)
 └─────────────────────────┘
 ```
 
@@ -185,8 +185,8 @@ GNU General Public License, Version 3 - See [LICENSE](LICENSE) file
 
 ## Links
 
-- **Source**: https://github.com/FlossWare/commons
-- **Issues**: https://github.com/FlossWare/commons/issues
+- **Source**: https://github.com/FlossWare/jcommons
+- **Issues**: https://github.com/FlossWare/jcommons/issues
 - **Solenopsis SOAP**: https://github.com/solenopsis/soap
 - **Solenopsis Session**: https://github.com/solenopsis/session
 - **Package Repository**: https://packagecloud.io/flossware/java

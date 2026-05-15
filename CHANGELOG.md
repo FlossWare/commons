@@ -1,9 +1,36 @@
 # Changelog
 
-All notable changes to the FlossWare Commons library will be documented in this file.
+All notable changes to the FlossWare JCommons library will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.14] - 2026-05-15
+
+### Changed
+- **BREAKING**: Renamed project from "commons" to "jcommons"
+  - Maven artifactId: org.flossware:commons → org.flossware:jcommons
+  - Java packages: org.flossware.commons.* → org.flossware.jcommons.*
+  - GitHub repository: FlossWare/commons → FlossWare/jcommons
+
+### Migration Guide
+Update your pom.xml:
+```xml
+<dependency>
+    <groupId>org.flossware</groupId>
+    <artifactId>jcommons</artifactId>
+    <version>1.14</version>
+</dependency>
+```
+
+Update your imports:
+```java
+// Old
+import org.flossware.commons.util.SoapUtil;
+
+// New
+import org.flossware.jcommons.util.SoapUtil;
+```
 
 ## [1.10] - 2024-09-03
 
