@@ -11,6 +11,8 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
@@ -26,7 +28,7 @@ public class StringUtil {
     /**
      * Our logger.
      */
-    private static final Logger logger = Logger.getLogger(StringUtils.class.getName());
+    private static final Logger logger = Logger.getLogger(StringUtil.class.getName());
 
     /**
      * Return the logger.
@@ -72,35 +74,37 @@ public class StringUtil {
 
 
     /**
-     * Checks <code>str</code> to ensureObject it is not null nor empty.
+     * Checks <code>str</code> to ensure it is not null nor empty.
+     * Delegates to requireNonBlank for validation.
      *
-     * @param str The string to inspect to ensureObject its not null nor empty.
+     * @param str The string to inspect to ensure its not null nor empty.
      * @param errorMsg The error message within the raised exception if
      * <code>str</code> is null or empty.
      *
      * @return str if it is not null or empty.
      *
-     * @throws IllegalArgumentException if <code>object</code> is null.
+     * @throws IllegalArgumentException if <code>str</code> is blank.
+     * @deprecated Use {@link #requireNonBlank(String, String)} instead
      */
+    @Deprecated
     public static String ensureString(final String str, final String errorMsg) throws IllegalArgumentException {
-        if (StringUtils.isBlank(str)) {
-            throw new IllegalArgumentException(errorMsg);
-        }
-
-        return str;
+        return requireNonBlank(str, errorMsg);
     }
 
     /**
-     * Checks <code>str</code> to ensureObject it is not null nor empty.
+     * Checks <code>str</code> to ensure it is not null nor empty.
+     * Delegates to requireNonBlank for validation.
      *
-     * @param str The string to inspect to ensureObject its not null nor empty.
+     * @param str The string to inspect to ensure its not null nor empty.
      *
      * @return str if it is not null or empty.
      *
-     * @throws IllegalArgumentException if <code>object</code> is null.
+     * @throws IllegalArgumentException if <code>str</code> is blank.
+     * @deprecated Use {@link #requireNonBlank(String)} instead
      */
+    @Deprecated
     public static String ensureString(final String str) throws IllegalArgumentException {
-        return ensureString(str, ObjectUtil.DEFAULT_ERROR_MSG);
+        return requireNonBlank(str);
     }
 
     /**
@@ -256,38 +260,54 @@ public class StringUtil {
         }
     }
 
+    /**
+     * Serializes and compresses a Serializable object to a Base64-encoded string.
+     *
+     * @param serializable the object to serialize and compress
+     * @return the compressed, Base64-encoded string representation
+     *
+     * @throws IllegalArgumentException if serializable is null
+     * @throws RuntimeException if serialization fails
+     */
     public static String toCompressedString(final Serializable serializable) {
         if (null == serializable) {
-            LoggerUtil.log(getLogger(), Level.WARNING, "Cannot serialize a null object!");
-            return null;
+            LoggerUtil.log(getLogger(), Level.SEVERE, "Cannot serialize a null object!");
+            throw new IllegalArgumentException("Cannot serialize a null object!");
         }
 
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             toCompressedStream(baos, serializable);
 
-            return baos.toString();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (final IOException ioException) {
             LoggerUtil.log(getLogger(), Level.SEVERE, ioException, "Trouble serializing object!");
+            throw new RuntimeException("Failed to serialize and compress object", ioException);
         }
-
-        return null;
     }
 
+    /**
+     * Serializes a Serializable object to a Base64-encoded string.
+     *
+     * @param serializable the object to serialize
+     * @return the Base64-encoded string representation
+     *
+     * @throws IllegalArgumentException if serializable is null
+     * @throws RuntimeException if serialization fails
+     */
     public static String toString(final Serializable serializable) {
         if (null == serializable) {
-            LoggerUtil.log(getLogger(), Level.WARNING, "Cannot serialize a null object!");
-            return null;
+            LoggerUtil.log(getLogger(), Level.SEVERE, "Cannot serialize a null object!");
+            throw new IllegalArgumentException("Cannot serialize a null object!");
         }
 
         try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             toStream(baos, serializable);
 
-            return baos.toString();
+            return Base64.getEncoder().encodeToString(baos.toByteArray());
         } catch (final IOException ioException) {
             LoggerUtil.log(getLogger(), Level.SEVERE, ioException, "Trouble serializing object as a string!");
+            throw new RuntimeException("Failed to serialize object", ioException);
         }
-
-        return null;
     }
 
     static <T extends Serializable> T fromStream(final InputStream is) {
@@ -322,40 +342,79 @@ public class StringUtil {
         return null;
     }
 
+    /**
+     * Deserializes and decompresses an object from a Base64-encoded compressed string.
+     *
+     * WARNING: Java deserialization of untrusted data is a security risk.
+     * Only deserialize data from trusted sources. Consider using JSON or XML
+     * for data from untrusted sources.
+     *
+     * @param <T> the type of the object to deserialize
+     * @param str the Base64-encoded compressed string to deserialize
+     * @return the deserialized object
+     *
+     * @throws IllegalArgumentException if str is blank
+     * @throws RuntimeException if deserialization fails
+     */
     public static <T extends Serializable> T fromCompressedString(final String str) {
         if (StringUtils.isBlank(str)) {
-            LoggerUtil.log(getLogger(), Level.WARNING, "Cannot deserialize from an empty string!");
-
-            return null;
+            LoggerUtil.log(getLogger(), Level.SEVERE, "Cannot deserialize from an empty string!");
+            throw new IllegalArgumentException("Cannot deserialize from an empty string!");
         }
 
-        try (final ByteArrayInputStream bais = new ByteArrayInputStream(str.getBytes())) {
-            return fromCompressedString(bais);
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(str);
+            try (final ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes)) {
+                T result = fromCompressedString(bais);
+                if (result == null) {
+                    throw new RuntimeException("Failed to deserialize compressed string");
+                }
+                return result;
+            }
         } catch (final IOException ioException) {
-            LoggerUtil.log(getLogger(), Level.SEVERE, ioException, "Trouble serializing object as a string!");
+            LoggerUtil.log(getLogger(), Level.SEVERE, ioException, "Trouble deserializing object from string!");
+            throw new RuntimeException("Failed to deserialize compressed string", ioException);
         }
-
-        return null;
     }
 
+    /**
+     * Deserializes an object from a Base64-encoded string.
+     *
+     * WARNING: Java deserialization of untrusted data is a security risk.
+     * Only deserialize data from trusted sources. Consider using JSON or XML
+     * for data from untrusted sources.
+     *
+     * @param <T> the type of the object to deserialize
+     * @param str the Base64-encoded string to deserialize
+     * @return the deserialized object
+     *
+     * @throws IllegalArgumentException if str is blank
+     * @throws RuntimeException if deserialization fails
+     */
     public static <T extends Serializable> T fromString(final String str) {
         if (StringUtils.isBlank(str)) {
-            LoggerUtil.log(getLogger(), Level.WARNING, "Cannot deserialize from an empty string!");
-
-            return null;
+            LoggerUtil.log(getLogger(), Level.SEVERE, "Cannot deserialize from an empty string!");
+            throw new IllegalArgumentException("Cannot deserialize from an empty string!");
         }
 
-        try (final ByteArrayInputStream bais = new ByteArrayInputStream(str.getBytes())) {
-            return fromStream(bais);
+        try {
+            byte[] decodedBytes = Base64.getDecoder().decode(str);
+            try (final ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes)) {
+                T result = fromStream(bais);
+                if (result == null) {
+                    throw new RuntimeException("Failed to deserialize string");
+                }
+                return result;
+            }
         } catch (final IOException ioException) {
-            LoggerUtil.log(getLogger(), Level.SEVERE, ioException, "Trouble serializing object as a string!");
+            LoggerUtil.log(getLogger(), Level.SEVERE, ioException, "Trouble deserializing object from string!");
+            throw new RuntimeException("Failed to deserialize string", ioException);
         }
-
-        return null;
     }
 
     /**
      * Generates a unique string with the string's prefix being prefix and suffix being suffix.
+     * Uses UUID to ensure uniqueness even under high-concurrency scenarios.
      *
      * @param prefix the prefix.
      * @param suffix the suffix.
@@ -363,7 +422,7 @@ public class StringUtil {
      * @return a unique string containing prefix as prefix and suffix as suffix.
      */
     public static final String generateUniqueString(final String prefix, final String suffix) {
-        return prefix + System.currentTimeMillis() + suffix;
+        return prefix + UUID.randomUUID().toString() + suffix;
     }
 
     /**

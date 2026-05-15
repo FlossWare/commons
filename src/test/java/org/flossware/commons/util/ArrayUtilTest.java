@@ -1,0 +1,76 @@
+package org.flossware.commons.util;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class ArrayUtilTest {
+
+    @Test
+    void testEnsureArray_withValidArray() {
+        String[] array = {"one", "two", "three"};
+        String[] result = ArrayUtil.ensureArray(array);
+        assertSame(array, result);
+    }
+
+    @Test
+    void testEnsureArray_withNullArray() {
+        assertThrows(NullPointerException.class, () ->
+            ArrayUtil.ensureArray(null));
+    }
+
+    @Test
+    void testEnsureArray_withEmptyArray() {
+        String[] array = {};
+        assertThrows(IllegalArgumentException.class, () ->
+            ArrayUtil.ensureArray(array));
+    }
+
+    @Test
+    void testEnsureArray_withNullElement() {
+        String[] array = {"one", null, "three"};
+        assertThrows(NullPointerException.class, () ->
+            ArrayUtil.ensureArray(array));
+    }
+
+    @Test
+    void testEnsureArray_withMinLength() {
+        String[] array = {"one", "two", "three"};
+        String[] result = ArrayUtil.ensureArray(array, 3);
+        assertSame(array, result);
+    }
+
+    @Test
+    void testEnsureArray_withMinLength_tooShort() {
+        String[] array = {"one", "two"};
+        assertThrows(IllegalArgumentException.class, () ->
+            ArrayUtil.ensureArray(array, 3));
+    }
+
+    @Test
+    void testEnsureArray_withCustomMessage() {
+        String[] array = {};
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            ArrayUtil.ensureArray(array, "Custom error message"));
+        assertEquals("Custom error message", exception.getMessage());
+    }
+
+    @Test
+    void testEnsureArray_withMinLengthAndMessage() {
+        String[] array = {"one"};
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+            ArrayUtil.ensureArray(array, 2, "Need at least 2 elements"));
+        assertEquals("Need at least 2 elements", exception.getMessage());
+    }
+
+    @Test
+    void testEnsureArray_singleElement() {
+        String[] array = {"only"};
+        String[] result = ArrayUtil.ensureArray(array);
+        assertSame(array, result);
+    }
+
+    @Test
+    void testDefaultMinArrayLength() {
+        assertEquals(1, ArrayUtil.DEFAULT_MIN_ARRAY_LENGTH);
+    }
+}
