@@ -7,7 +7,7 @@
     <artifactId>jcommons</artifactId>
     <version>1.16</version>
 
-    <name>FlossWare JCommons Library</name>
+    <name>jcommons</name>
     <description>This project is a collection of shareable Java related functionality.</description>
 
     <url>https://github.com/FlossWare/jcommons</url>

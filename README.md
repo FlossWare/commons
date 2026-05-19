@@ -1,4 +1,4 @@
-# FlossWare JCommons
+# jcommons
 
 Foundation utilities for the [Solenopsis](https://github.com/solenopsis) Salesforce SOAP framework.
 
@@ -159,7 +159,7 @@ This library sits at the foundation of the Solenopsis stack:
 └───────────┬─────────────┘
             │ depends on
 ┌───────────▼─────────────┐
-│  FlossWare JCommons      │  ← Foundation utilities (this)
+│  jcommons               │  ← Foundation utilities (this)
 └─────────────────────────┘
 ```
 
