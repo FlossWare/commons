@@ -5,6 +5,31 @@ All notable changes to the jcommons library will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.20] - 2026-05-20
+
+### Added
+- Logback configuration for structured logging
+- JaCoCo plugin for code coverage reporting
+- Enhanced Surefire plugin configuration with IT test exclusion
+- JavaDoc generation in GitHub Actions workflow (non-blocking)
+- Security scanning in CI/CD pipeline
+
+### Changed
+- Project name simplified to "jcommons" (from "FlossWare JCommons")
+- Enhanced .gitignore for comprehensive coverage artifacts
+- Updated GitHub Actions workflow with coverage and security checks
+- Dependency version updates: JUnit 5.11.4, Mockito 5.14.2, SLF4J 2.0.16, Logback 1.5.12
+
+## [1.15] - 2026-05-19
+
+### Added
+- SLF4J logging framework integration
+- Mockito testing framework
+- JUnit Jupiter engine for test execution
+
+### Changed
+- Documentation consistently uses "jcommons" naming
+
 ## [1.14] - 2026-05-15
 
 ### Changed
